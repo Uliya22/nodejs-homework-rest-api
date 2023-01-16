@@ -7,10 +7,8 @@ const {
   updatedContact,
   changeStatus
 } = require("../../controllers/contacts.controller");
-const {
-  postContactValidation,
-  putContactValidation,
-} = require("../../middlewares/validation");
+const { postContactValidation,} = require("../../middlewares/postValidation");
+const { putContactValidation } = require("../../middlewares/putValidation");
 const router = express.Router();
 const { tryCatchWrapper } = require("../../helpers/error");
 

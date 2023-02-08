@@ -7,10 +7,13 @@ const {
   updatedContact,
   changeStatus
 } = require("../../controllers/contacts.controller");
-const { postContactValidation,} = require("../../middlewares/postValidation");
+const { authAutorised } = require('../../middlewares/authMiddleware');
+const { postContactValidation } = require("../../middlewares/postValidation");
 const { putContactValidation } = require("../../middlewares/putValidation");
 const router = express.Router();
 const { tryCatchWrapper } = require("../../helpers/error");
+
+router.use(authAutorised);
 
 router.get("/", tryCatchWrapper(getContacts));
 router.get("/:contactId", tryCatchWrapper(getContact));
@@ -23,4 +26,4 @@ router.put(
 );
 router.patch("/:contactId/favorite", tryCatchWrapper(changeStatus));
 
-module.exports = router;
+module.exports = {contactsRouter: router};

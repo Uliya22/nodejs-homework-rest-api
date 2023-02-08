@@ -1,9 +1,3 @@
-function HttpError(status, message) {
-    const error = new Error(message);
-    error.status = status;
-    return error;
-}
-
 function tryCatchWrapper(enpointFn) {
   return async (req, res, next) => {
     try {
@@ -14,7 +8,38 @@ function tryCatchWrapper(enpointFn) {
   };
 }
 
+class WrongParametersError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 400;
+  }
+}
+
+class NotAuthorizedError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 401;
+  }
+}
+
+class RepetParametersError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 409;
+  }
+}
+
+class Unauthorized extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 401;
+  }
+}
+
 module.exports = {
-    HttpError,
+  WrongParametersError,
+  NotAuthorizedError,
+  RepetParametersError,
+  Unauthorized,
     tryCatchWrapper
 };

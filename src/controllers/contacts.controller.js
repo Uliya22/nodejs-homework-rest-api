@@ -4,19 +4,19 @@ const {
   removeContact,
   addContact,
   updateContact,
-  updateStatusContact
-} = require("../servise/contactsService");
-const { WrongParametersError } = require("../helpers/error");
+  updateStatusContact,
+} = require('../servise/contactsService');
+const { WrongParametersError } = require('../helpers/error');
 
 async function getContacts(req, res, next) {
   const { _id } = req.user;
 
-   let { page = 1, limit = 5 } = req.query;
-   const skip = (page - 1) * limit;
+  let { page = 1, limit = 5, favorite } = req.query;
+  const skip = (page - 1) * limit;
   limit = parseInt(limit) > 10 ? 10 : parseInt(limit);
-  
-  const contacts = await listContacts(_id, {skip, limit});
-  return res.json({contacts, skip, limit});
+
+  const contacts = await listContacts(_id, { skip, limit }, favorite);
+  return res.json({ contacts, skip, limit });
 }
 
 async function getContact(req, res, next) {
@@ -24,8 +24,7 @@ async function getContact(req, res, next) {
   const { _id } = req.user;
   const contact = await getContactById(id, _id);
   if (!contact) {
-    next (new WrongParametersError(`Contact with id ${id} is not found`));
-   
+    next(new WrongParametersError(`Contact with id ${id} is not found`));
   }
 
   return res.json(contact);
@@ -44,7 +43,7 @@ async function deleteContact(req, res, next) {
   const deletedContact = await removeContact(id, _id);
 
   if (!deletedContact) {
-    next (new WrongParametersError(`Contact with id ${id} is not found`));
+    next(new WrongParametersError(`Contact with id ${id} is not found`));
   }
 
   return res.status(200).json({ message: `Contact with id ${id} is deleted` });
@@ -59,7 +58,7 @@ async function updatedContact(req, res, next) {
   if (response) {
     return res.json(response);
   }
-  next (new WrongParametersError(`Contact with id=${id} not found! `));
+  next(new WrongParametersError(`Contact with id=${id} not found! `));
 }
 
 async function changeStatus(req, res, next) {
@@ -68,11 +67,10 @@ async function changeStatus(req, res, next) {
   const { favorite } = req.body;
   const response = await updateStatusContact(id, _id, { favorite });
 
-  
   if (response) {
     return res.json(response);
   }
-  next (new WrongParametersError(`Contact with id=${id} not found! `));
+  next(new WrongParametersError(`Contact with id=${id} not found! `));
 }
 
 module.exports = {

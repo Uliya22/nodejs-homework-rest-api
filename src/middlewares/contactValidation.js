@@ -1,4 +1,4 @@
-const Joi = require("joi");
+const Joi = require('joi');
 
 function postContactValidation(req, res, next) {
   const schema = Joi.object({
@@ -7,7 +7,7 @@ function postContactValidation(req, res, next) {
     phone: Joi.string()
       .min(7)
       .max(30)
-      .pattern(/^\+|\d[0-9()]*\d$/, "numbers")
+      .pattern(/^\+|\d[0-9()]*\d$/, 'numbers')
       .required(),
   });
 
@@ -19,13 +19,15 @@ function postContactValidation(req, res, next) {
   next();
 }
 
-function postUserValidation(req, res, next) {
+function putContactValidation(req, res, next) {
   const schema = Joi.object({
-    email: Joi.string().email().min(3).max(30).required(),
-    password: Joi.string()
-      .min(5)
-      .max(10)
-      .required()
+    name: Joi.string().min(3).max(30).required(),
+    email: Joi.string().email().min(3).max(30).optional(),
+    phone: Joi.string()
+      .min(7)
+      .max(30)
+      .pattern(/^\+|\d[0-9()]*\d$/, 'numbers')
+      .optional(),
   });
 
   const { error } = schema.validate(req.body);
@@ -33,10 +35,11 @@ function postUserValidation(req, res, next) {
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }
+
   next();
 }
 
 module.exports = {
   postContactValidation,
-  postUserValidation
+  putContactValidation,
 };

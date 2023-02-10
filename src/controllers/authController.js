@@ -1,5 +1,5 @@
-const { register, login, logout, current } = require("../servise/authServise");
-const jwt = require("jsonwebtoken");
+const { register, login, logout, current, updateSubscription } = require('../servise/authServise');
+const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
 async function registrationController(req, res) {
@@ -20,7 +20,7 @@ async function loginController(req, res) {
 
   const storedUser = await login({ email, password });
   const token = jwt.sign({ id: storedUser._id }, JWT_SECRET, {
-    expiresIn: "1h",
+    expiresIn: '1h',
   });
 
   res.json({
@@ -37,7 +37,7 @@ async function logoutController(req, res, next) {
   const { userId } = req.params;
   const user = await logout(userId, token);
   token = null;
-  
+
   if (user) {
     return res.status(204).json();
   }
@@ -51,16 +51,25 @@ async function currentController(req, res, next) {
     return res.status(200).json({
       user: {
         email: user.email,
-        subscription: user.subscription
-      }
-    })
+        subscription: user.subscription,
+      },
+    });
   }
   next();
+}
+
+async function subscriptionController(req, res, next) {
+  const { _id } = req.user;
+  const { subscription } = req.body;
+
+  const user = await updateSubscription(_id, subscription);
+  return res.status(200).json(user);
 }
 
 module.exports = {
   registrationController,
   loginController,
   logoutController,
-  currentController
+  currentController,
+  subscriptionController,
 };

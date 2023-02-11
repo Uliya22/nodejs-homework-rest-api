@@ -15,13 +15,6 @@ class WrongParametersError extends Error {
   }
 }
 
-class NotAuthorizedError extends Error {
-  constructor(message) {
-    super(message);
-    this.status = 401;
-  }
-}
-
 class RepetParametersError extends Error {
   constructor(message) {
     super(message);
@@ -38,8 +31,7 @@ class Unauthorized extends Error {
 
 module.exports = {
   WrongParametersError,
-  NotAuthorizedError,
   RepetParametersError,
   Unauthorized,
-    tryCatchWrapper
+  tryCatchWrapper,
 };

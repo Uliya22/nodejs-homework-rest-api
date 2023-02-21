@@ -1,4 +1,4 @@
-const { register, login, logout, current, updateSubscription } = require('../servise/authServise');
+const { register, login, logout, current, updateSubscription, avatarService } = require('../servise/authServise');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
@@ -11,6 +11,7 @@ async function registrationController(req, res) {
       email: savedUser.email,
       password: savedUser.password,
       subscription: savedUser.subscription,
+      avatarURL: savedUser.avatarURL,
     },
   });
 }
@@ -66,10 +67,17 @@ async function subscriptionController(req, res, next) {
   return res.status(200).json(user);
 }
 
+async function avatarController(req, res, next) {
+  const { _id } = req.user;
+  const { path, filename } = req.file;
+  const url = await avatarService(path, filename, _id);
+  res.json({ avatarURL: url });
+}
 module.exports = {
   registrationController,
   loginController,
   logoutController,
   currentController,
   subscriptionController,
+  avatarController,
 };

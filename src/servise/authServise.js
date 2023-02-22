@@ -9,9 +9,9 @@ const sgMail = require('@sendgrid/mail');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-async function register(email, password) {
-  if (await User.findOne({ email } )) {
-    next(new RepetParametersError('Email in use!'));
+async function register({email, password}) {
+  if (await User.findOne({ email })) {
+    throw new RepetParametersError('Email in use!');
   };  
 
   const url = gravatar.url(email, {
@@ -38,11 +38,11 @@ async function login({ email, password }) {
   });
 
   if (!user) {
-    next(new Unauthorized('Email or password is wrong'));
+    throw new Unauthorized('Email or password is wrong');
   }
 
   if (!(await bcrypt.compare(password, user.password))) {
-    next(new Unauthorized('Email or password is wrong'));
+    throw new Unauthorized('Email or password is wrong');
   }
 
   return user;
@@ -52,7 +52,7 @@ async function logout(id) {
   const user = await User.findById(id);
 
   if (!user) {
-    next(new Unauthorized('Not authorized'));
+    throw new Unauthorized('Not authorized');
   }
   return user;
 }
@@ -61,7 +61,7 @@ async function current(id) {
   const user = await User.findById(id);
 
   if (!user) {
-    next(new Unauthorized('Not authorized'));
+    throw new Unauthorized('Not authorized');
   }
   return user;
 }

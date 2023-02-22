@@ -4,7 +4,7 @@ const { JWT_SECRET } = process.env;
 
 async function registrationController(req, res) {
   const { email, password } = req.body;
-  const savedUser = await register(email, password);
+  const savedUser = await register({email, password});
 
   return res.status(201).json({
     user: {

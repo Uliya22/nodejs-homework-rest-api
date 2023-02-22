@@ -5,15 +5,30 @@ const bcrypt = require('bcrypt');
 const { RepetParametersError, Unauthorized } = require('../helpers/error');
 const fs = require('fs/promises');
 const path = require('path');
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 async function register(email, password) {
-  if (await User.findOne({ email }))
+  if (await User.findOne({ email } )) {
     next(new RepetParametersError('Email in use!'));
+  };  
 
   const url = gravatar.url(email, {
     s:'250', d: 'mp'
-})
+  })
+
   const user = await User.create({ email, password, avatarURL: url });
+
+  const msg = {
+    to: 'uliya.d@ukr.net',
+    from: 'uliya.d@ukr.net',
+    subject: 'Thank you for registration!',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: '<h1>and easy to do anywhere, even with Node.js</h1>',
+  };
+  await sgMail.send(msg);
+
   return user;
 }
 

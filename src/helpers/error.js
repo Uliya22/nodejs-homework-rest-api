@@ -8,6 +8,12 @@ function tryCatchWrapper(enpointFn) {
   };
 }
 
+class RequestError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 404;
+  }
+}
 class WrongParametersError extends Error {
   constructor(message) {
     super(message);
@@ -29,9 +35,18 @@ class Unauthorized extends Error {
   }
 }
 
+class NotverificatiomEmail extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 403;
+  }
+}
+
 module.exports = {
+  RequestError,
   WrongParametersError,
   RepetParametersError,
   Unauthorized,
+  NotverificatiomEmail,
   tryCatchWrapper,
 };

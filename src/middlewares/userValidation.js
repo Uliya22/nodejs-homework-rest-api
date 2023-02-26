@@ -14,6 +14,19 @@ function postUserValidation(req, res, next) {
   next();
 }
 
+function verifyEmailValidation(req, res, next) {
+  const schema = Joi.object({
+    email: Joi.string().email().min(3).max(30),
+  });
+
+  const { error } = schema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
+  }
+  next();
+}
+
 function subscriptionValidation(req, res, next) {
   const schema = Joi.object({
     subscription: Joi.string().valid('starter', 'pro', 'business').required(),
@@ -27,5 +40,6 @@ function subscriptionValidation(req, res, next) {
 
 module.exports = {
   postUserValidation,
-  subscriptionValidation
+  subscriptionValidation,
+  verifyEmailValidation,
 };

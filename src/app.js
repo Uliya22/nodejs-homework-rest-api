@@ -21,7 +21,6 @@ app.use((req, res) => {
 });
 
 app.use((error, req, res, next) => {
-  // console.log(error);
   if (error.status) {
     return res.status(error.status).json({
       message: error.message,

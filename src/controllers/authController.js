@@ -1,4 +1,4 @@
-const { register, login, logout, current, updateSubscription, avatarService } = require('../servise/authServise');
+const { register,  login, logout, current, updateSubscription, avatarService, verifyEmail, verifyRecendEmail } = require('../servise/authServise');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
@@ -13,6 +13,24 @@ async function registrationController(req, res) {
       subscription: savedUser.subscription,
       avatarURL: savedUser.avatarURL,
     },
+  });
+}
+
+async function verifyController(req, res) {
+  const { verificationToken } = req.params;
+  const savedUser = await verifyEmail({ verificationToken });
+  
+    return res.status(200).json({
+      message: `Email ${savedUser.email} verification successful`,
+    });
+}
+
+async function verifyRecendEmailController(req, res) {
+  const { email } = req.body;
+  const savedUser = await verifyRecendEmail({ email });
+
+  return res.status(200).json({
+    message: `Email ${savedUser.email} verification successful`,
   });
 }
 
@@ -75,6 +93,8 @@ async function avatarController(req, res, next) {
 }
 module.exports = {
   registrationController,
+  verifyController,
+  verifyRecendEmailController,
   loginController,
   logoutController,
   currentController,
